@@ -1,0 +1,111 @@
+<ion-view >
+  <ion-content padding="true" >
+
+
+<!-- ----------------SECTION ONE---------------- -->
+      <!-- work with a phone number-->
+      <div class="row section">
+        <div class="col">
+          <h1>{{'SELECT_PHONES' | translate}}</h1>
+        </div>
+      </div>
+
+      <!-- button col-->
+      <div class="row">
+        <div class="col col-67 col-center inputPhoneNumberCol">
+          <i class="icon ion-android-call placeholder-icon"></i>
+          <ng-form name="myForm" novalidate="novalidate">
+            <input class="inputPhoneNumber" name="phone" type="tel" ng-model="$parent.myInput.inputPhoneNumber" pattern="[0-9+]\d+" ng-minlength="8" required placeholder="{{'PHONENUMBER' | translate}}" />
+            <button id="addPhoneButton"  ng-class="{'ButtonValid':myInput.inputPhoneNumber}" class="button button-clear icon ion-close-circled button-dark"  ng-click="addPhoneNumber(myInput.inputPhoneNumber)"><span class="tooltip" ng-hide="myInput.inputPhoneNumber"><span class="tooltiptext">{{'INVALID_PHONE' | translate}}</span></span></button>
+          </ng-form>
+        </div>
+
+        <!-- button add contact-->
+        <div class="col col-center">
+            <span class="textOr">{{'OR' | translate}}</span>
+            <button class="vcenter button icon button-positive center" id="addContact" ng-click="getPhoneNumbers()">
+              <i class="icon ion-person-add" ></i>
+            </button>
+        </div>
+      </div>
+
+
+      <!--stickers contact-->
+      <div class="row">
+        <div class="col">
+          <ion-scroll style="background-color:#eee;" direction="y" overflow-scroll="false" style='width:30px;height:30px;scrollbar-y=true;'>
+            <div class="receiversContainer" ng-if="displayCards" style="height:60px;width:100%;">
+
+              <div class="receiversList" ng-controller="receiversListCtrl">
+                <div class="receiver" ng-repeat="receiver in receivers.all">
+                  <img class="myValign" ng-src="{{receiver.photo}}">
+                  <span class="myValign">{{receiver.phone}}</span>
+                  <span class="myValign">{{receiver.contactName}}</span>
+                  <a class="button button-small button-smallbutton-smallbutton-icon icon ion-close-round myValign deleteButton" ng-click="deleteContact($index, 1)"></a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+<!-- ----------------SECTION TWO---------------- -->
+    <!-- configuration-->
+    <div class="row">
+      <div class="col">
+        <h1>{{'FREQUENCY_CONFIG' | translate}}</h1>
+      </div>
+    </div>
+
+    <!-- Parameter by user-->
+    <div ng-controller="formCtrl">
+      <!--frequency-->
+      <div class="row row-center reducePadding">
+        <div class="col toTheRight">
+         <div class="MinutedList">
+
+            <select class="minSelector" ng-options="option for option in minuteSelect.availableOptions track by option"
+                 ng-model="minuteSelect.selectedOption"
+                 ng-change="initialiseTimeInterval(minuteSelect.selectedOption)"
+                  ng-init="initialiseTimeInterval(minuteSelect.selectedOption)">
+            </select>
+
+         </div>
+        </div>
+          <div class="col">{{'MIN' | translate}}
+
+          </div>
+
+      </div>
+
+
+<!-- ----------------SECTION THREE---------------- -->
+      <!--sms text-->
+      <div class="row">
+        <div class="col">
+          <h1>{{'CUSTOMTEXTE' | translate}}</h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col inputPhoneNumberCol myHeight">
+          <i class="icon ion-chatbox-working placeholder-icon myIconSize"></i>
+          <textarea placeholder="{{'SMSTEXT' | translate}}" ng-change="updateSmsText()" ng-model="smsText"></textarea>
+        </div>
+      </div>
+    </div>
+<!-- ----------------SECTION FOR---------------- -->
+      <!-- go to the running  window-->
+
+      <div class="row">
+        <div class="col col-33 col-offset-33 Hcenter">
+          <button id="startButton" class="button icon-left ion-arrow-right-b button-positive" ng-click="StartRunning()">
+            {{'START' | translate}}
+          </button>
+        </div>
+      </div>
+
+  </ion-content>
+</ion-view>

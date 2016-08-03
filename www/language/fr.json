@@ -1,0 +1,25 @@
+{
+  "LANGUAGE":"Langue",
+  "BUTTON_LANG_FR": "Français",
+  "BUTTON_LANG_EN": "Anglais",
+  "EXIT":"FERMER",
+  "SELECT_PHONES" : "1. AJOUTER UN CONTACT",
+  "PHONENUMBER" : "n° ",
+  "IS_EXIST" : "ce numéro existe déjà",
+  "NUMBER_SELECTION" : "Sélectionner le numéro",
+  "FREQUENCY" : "fréquence d'envoi",
+  "FREQUENCY_CONFIG" : "2. UN SMS TOUTES LES...",
+  "CUSTOMTEXTE" : "3. MESSAGE (optionnel)",
+  "YOU_ARE_HERE" : "tu es là",
+  "MIN" : "MINUTE(S)",
+  "SMSTEXT" : "message",
+  "START" : "START",
+  "NAMEAPPLI" : "HERE I'M",
+  "NEXTSEND" : "PROCHAIN ENVOI",
+  "INVALID_PHONE" : "numéro incorrect",
+  "WELCOME_TEXT" : "Partage ta position par SMS",
+  "OR": "OU",
+  "NUMBER_IS_EMPTY" : "Saisir un numéro de téléphone ou ajouter un contact",
+  "PHONE_EXIST" : "Ce numéro est déjà dans la liste d'envoi"
+
+}

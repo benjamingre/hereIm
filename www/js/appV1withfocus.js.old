@@ -1,0 +1,718 @@
+// Ionic Starter App
+
+// angular.module is a global place for creating, registering and retrieving Angular modules
+// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
+// the 2nd parameter is an array of 'requires'
+var smsl = angular.module('smsl', ['ionic',
+                                   'pascalprecht.translate',
+                                   'ngCordova'])
+
+.config(function($compileProvider){
+  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+})
+
+.run(function($ionicPlatform) {
+  $ionicPlatform.ready(function() {
+    if(window.cordova && window.cordova.plugins.Keyboard) {
+      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      // for form inputs)
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+
+      // Don't remove this line unless you know what you are doing. It stops the viewport
+      // from snapping when text inputs are focused. Ionic handles this internally for
+      // a much nicer keyboard experience.
+      cordova.plugins.Keyboard.disableScroll(true);
+    }
+    if(window.StatusBar) {
+      StatusBar.styleDefault();
+    }
+  });
+});
+
+/*----------------Config ----------------*/
+
+/*--------- Config App-------- */
+smsl.constant('config', {
+                'languages' : [
+                  {'id':'fr' , 'language':'BUTTON_LANG_FR'},
+                  {'id':'en' , 'language':'BUTTON_LANG_EN'}
+                ],
+                'PREFERREDLANGUAGE':
+                  {'id':'en' , 'language':'BUTTON_LANG_EN'}
+});
+
+//Param the translate
+smsl.config(function ($translateProvider,config) {
+
+  $translateProvider.useStaticFilesLoader({
+    prefix: './language/',
+    suffix: '.json'
+  });
+
+  $translateProvider.preferredLanguage(config.PREFERREDLANGUAGE.id);
+});
+
+smsl.config(function ($stateProvider,$urlRouterProvider) {
+  //need to start
+  $urlRouterProvider.otherwise('/')
+
+  $stateProvider.state('home', {
+    url: '/',
+    templateUrl: 'home.html',
+    controller: 'HomeCtrl'
+  })
+
+  $stateProvider.state('running', {
+    url: '/running',
+    params: {
+      parametre: null,
+    },
+    templateUrl: 'running.html',
+    controller: 'RunningCtrl'
+  })
+});
+
+
+/*----------------Controllers ----------------*/
+
+/*test with a var*/
+smsl.controller('expression', function($scope) {
+  $scope.test = 'Hola!';
+});
+
+
+/*controler for menu and navigation*/
+smsl.controller('menu', function($scope,$rootScope,$ionicSideMenuDelegate,$translate,$ionicPopover,config,gpsPosition,sendSMS) {
+
+    //open the menu left
+    $scope.openMenu = function() {
+      $ionicSideMenuDelegate.toggleLeft();
+    };
+
+    //close the app
+    $scope.closeApp = function() {
+      ionic.Platform.exitApp();
+    };
+
+    //Change language
+    $scope.changeLanguage = function (key) {
+      $translate.use(key.id);
+    };
+
+    //give config to html
+    $scope.languagesList=config.languages;
+    $scope.preferredLanguage=config.PREFERREDLANGUAGE;
+
+    $ionicPopover.fromTemplateUrl('map.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+      }).then(function(popover) {
+        $scope.popover = popover;
+    });
+
+    //open popover map
+    $scope.openPopover = function($event) {
+      //show the popover
+      $scope.popover.show($event)
+        .then(function(){
+
+          //start watching Position
+          gpsPosition.findPosition();
+
+          //load map
+          var mapOptions = {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 8,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+
+          //work only when controler is open
+          $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        });
+    };
+
+    //stop watching when map is close
+    $scope.$on('popover.hidden', function() {
+      gpsPosition.stopWatching();
+      //$scope.popover.remove();
+    });
+
+
+});
+
+//home controler
+smsl.controller('HomeCtrl', function($scope, $ionicScrollDelegate,getContact,receiversList) {
+
+  //create object receivers list contact
+
+  //select contact list numbers
+  $scope.getPhoneNumbers = function() {
+
+    getContact.phoneNumbersList($scope)
+      .then(function (phones) {
+        if (phones.length>1){
+          //display modal and select one number
+          $scope.phoneNumbers = phones;
+          getContact.selectNumber($scope).then(
+            function(number){
+              //insert number in object
+              receiversList.add(number);
+            }
+          );
+        }else{
+          //insert number in object
+          receiversList.add(phones[0].value);
+        }
+      });
+  };
+});
+
+
+
+//controller for the  list receiver
+smsl.controller('receiversListCtrl', function($scope,receiversList) {
+  $scope.receivers = receiversList;
+  $scope.shouldShowDelete = true;
+});
+
+//form controller
+smsl.controller('formCtrl', function($scope,focus,$cordovaDatePicker,$filter,smsText) {
+
+  //initialise date
+  $scope.frequency = "00:01";
+
+  //edit date
+  $scope.date = function (){
+    var options = {
+      date: new Date("01/01/2015 "+$scope.frequency),
+      mode: 'time', // or 'date',
+      is24Hour:true, //fix it for en_En
+      androidTheme:3,
+      titleText : "each" //fix it for i18n
+    };
+
+    $cordovaDatePicker.show(options).then(function(date){
+        //FIX IT see bookmark date angular js for AM/PM
+        $scope.frequency=$filter('date')(date,'HH:mm');
+    });
+  };
+
+  //edit sms message
+  $scope.editSMS = function (id){
+    $scope.smsForm = ! $scope.smsForm;
+    focus.focusid(id);
+  };
+  //hide, show sms
+  $scope.hideInput = function () {
+    $scope.smsForm = ! $scope.smsForm;
+  };
+
+  //save sms Text when edited
+  $scope.smsText = "default text";
+  smsText.Text = $scope.smsText;
+
+  $scope.updateSmsText = function () {
+    smsText.Text = $scope.smsText;
+  };
+
+});
+
+
+//ctlr for popover map
+smsl.controller('MapCtrl', function($scope,gpsPosition) {
+
+  //key map
+  //AIzaSyC_c3-noQAc9vuCjRa3DJzDpnni5skPCBc
+
+  //Wait until the map is loaded
+  //See GPS new positions
+  $scope.$on('isANewPosition', function (event) {
+      //$scope.centerTo();
+      lat = gpsPosition.lastPosition.lat;
+      lng = gpsPosition.lastPosition.long;
+      $scope.map.panTo({lat:lat,lng:lng});
+  });
+
+  //center the Map
+  $scope.centerTo = function(){
+    //doesn't come from angularJs function so use apply to update scope!!
+    $scope.$apply(function () {
+    });
+  };
+
+});
+
+smsl.controller('RunningCtrl', function($scope, $stateParams,gpsPosition,$interval,$filter,receiversList,sendSMS,smsText) {
+  //start watching each ...
+
+  datetest = new Date("01/01/2015 "+"00:01");
+  //hours in millisecond
+  hInMs = $filter('date')(datetest, 'H')*3600000;
+  MinInMs = $filter('date')(datetest, 'm')*60000;
+  timeInterval = hInMs+MinInMs;
+
+  //searching each
+  //first start
+  searchingPosition();
+  //interval
+  //$interval(searchingPosition, timeInterval);
+
+  $interval(searchingPosition, 5000);
+
+  //start watching position
+  function searchingPosition() {
+    if (gpsPosition.isWatch==null){
+      gpsPosition.findPosition();
+    }
+  }
+
+  //send sms with a new position
+  $scope.$on('isANewPosition', function (event) {
+
+      lat = gpsPosition.lastPosition.lat;
+      lng = gpsPosition.lastPosition.long;
+      acc = gpsPosition.lastPosition.acc;
+      $scope.lat=lat;
+
+      //search until accuracy is under 15m
+      if (acc < 15){
+        //send sms
+        sendSMS.sendingSMS(receiversList.all,smsText);
+        //stop watching
+        gpsPosition.stopWatching();
+      }else{
+        alert(acc+"continue searching new positions");
+      }
+  });
+});
+
+
+/*----------------Factory ----------------*/
+
+//the receivers list
+smsl.factory('receiversList', function($q) {
+  return {
+    all: [],
+    add: function(number) {
+      //check if number is already in list
+      addPhone=true;
+      angular.forEach(this.all, function(value, key) {
+        if (value.phone===number){
+          //FIX IT with an error message in the scope
+          alert ('already exist');
+          addPhone=false;
+        }
+      });
+      //open contact
+      if (addPhone===true){
+        //FIX IT add contact name
+        this.all.push({"phone":number});
+      }
+    }
+  };
+});
+
+smsl.factory('smsText',function(){
+  return{
+    Text:"text message"
+  };
+});
+
+//Get Phone number of a contact
+smsl.factory('getContact', function($q,$cordovaContacts,$ionicModal) {
+
+    return {
+      //get contact
+      phoneNumbersList: function($scope) {
+        var q = $q.defer();
+
+        $cordovaContacts.pickContact().then(function (contactPicked) {
+          q.resolve(contactPicked.phoneNumbers);
+        });
+        return q.promise;
+      },
+      //select number for contact with many numbers
+      selectNumber: function(thisScope){
+        var q = $q.defer();
+
+        $ionicModal.fromTemplateUrl('selectNum.html', {
+          animation: 'slide-in-up',
+          scope:thisScope,
+
+        }).then(function(modal) {
+          modal.show();
+
+          thisScope.selectedNum = function (number) {
+            q.resolve(number);
+            modal.remove();
+          };
+        });
+        return q.promise;
+      }
+    };
+});
+
+
+//focus an input text and display keyboard
+smsl.factory('focus', function($timeout, $window, $cordovaKeyboard) {
+  return  {
+    focusid: function(id){
+
+      $timeout(function() {
+          var element = $window.document.getElementById(id);
+          if(element){
+            element.focus();
+             $cordovaKeyboard.show();
+          }
+      });
+    }
+  };
+});
+
+
+//GPS service
+smsl.factory('gpsPosition',function($cordovaGeolocation,$rootScope){
+  return {
+    lastPosition:"defaultpos",
+    CallbackPositionCount:0, //how many position return
+    minAccuracy:5, //accuracy min in meter,
+    isWatch:null,
+    findPosition: function(){
+
+      //In var to use object into functions
+      thisObject=this;
+
+      //start watching with cordovaGeolocation
+      var posOptions = {enableHighAccuracy: true};
+
+      //check already searching
+      if (this.isWatch!=null){
+        //continue
+        watchId=this.isWatch;
+      }else{
+        //create new ID
+        var watchId = $cordovaGeolocation.watchPosition(posOptions);
+      }
+        watchId.then(
+          null,
+          function(err) {
+          },
+          function(position) {
+            geolocationSuccess(position,thisObject);
+          });
+
+      this.isWatch = watchId;
+
+      function geolocationSuccess(position,thisObject){
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+        acc = position.coords.accuracy;
+        Position={"lat":lat,"long":long,"acc":acc};
+        //Update GPS last position
+        thisObject.lastPosition = Position;
+        //event for the resultat thought $rootScope
+        $rootScope.$broadcast('isANewPosition');
+      }
+
+    },
+    stopWatching:function(){
+      this.isWatch.clearWatch();
+      this.isWatch = null;
+    }
+  };
+
+});
+
+//sending sms
+smsl.factory('sendSMS',function($cordovaSms){
+  return{
+    sendingSMS:function(receiversList,smsText){
+
+      //sending options
+      var options = {
+            replaceLineBreaks: false, // true to replace \n by a new line, false by default
+            android: {
+                intent: ''  // send SMS with the native android SMS messaging
+                //intent: '' // send SMS without open any other app
+            }
+        };
+
+      var text = smsText.Text;
+      //loop the phone users
+      angular.forEach(receiversList, function(value, key){
+        var number = value.phone;
+
+        //who is the receivers
+        $cordovaSms.send(number, "text", options)
+         .then(function() {
+           alert("great sms is sending to "+number+smsText.Text);
+         }, function(error) {
+           alert("sms dont send");
+        });
+      });
+    }
+  };
+});
+
+/*
+var myApp = angular.module('AppTest',['ionic','ngCordova','pascalprecht.translate']);
+
+//config translation
+myApp.config(function ($translateProvider) {
+  $translateProvider.translations('en', {
+    TITLE: 'Hello',
+    FOO: 'This is a paragraph.',
+    BUTTON_LANG_EN: 'english',
+    BUTTON_LANG_DE: 'german'
+  });
+  $translateProvider.translations('de', {
+    TITLE: 'Hallo',
+    FOO: 'Dies ist ein Paragraph.',
+    BUTTON_LANG_EN: 'englisch',
+    BUTTON_LANG_DE: 'deutsch'
+  });
+  $translateProvider.preferredLanguage('de');
+});
+
+
+
+myApp.controller('GreetingController', function($scope,$timeout,message,sendSMS,$cordovaContacts,$translate) {
+
+  $scope.testmessage = 'Hola!';
+
+
+  $scope.toggle = function(msg) {
+    $scope.showPositive = !$scope.show;
+    $scope.messagePositive = msg;
+
+    $timeout(function(){
+        $scope.showPositive = !$scope.showPositive;
+    }, 1500);
+  };
+
+  $scope.toggle2 = function(msg) {
+    message.display(msg,'showPositive',$scope,$timeout)
+  };
+
+  $scope.sendSMS = function() {
+
+     sendSMS.send().then(
+       function(msg) {
+         message.display(msg,'showPositive',$scope,$timeout)
+       },
+       function(msg) {
+          message.display(msg,'showAlert',$scope,$timeout)
+       }
+   );
+  };
+
+  $scope.gps = function() {
+      var onSuccess = function(position) {
+      alert('Latitude: '          + position.coords.latitude          + '\n' +
+            'Longitude: '         + position.coords.longitude         + '\n' +
+            'Altitude: '          + position.coords.altitude          + '\n' +
+            'Accuracy: '          + position.coords.accuracy          + '\n' +
+            'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+            'Heading: '           + position.coords.heading           + '\n' +
+            'Speed: '             + position.coords.speed             + '\n' +
+            'Timestamp: '         + position.timestamp                + '\n');
+      };
+
+      // onError Callback receives a PositionError object
+      //
+      function onError(error) {
+      alert('code: '    + error.code    + '\n' +
+            'message: ' + error.message + '\n');
+      }
+
+
+      $scope.watchId = navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true });
+
+  };
+  $scope.stopGps = function() {
+    navigator.geolocation.clearWatch($scope.watchId);
+    delete $scope.watchId;
+
+  };
+
+  $scope.contact = function() {
+
+    $cordovaContacts.pickContact().then(function (contactPicked) {
+      $scope.items=contactPicked.phoneNumbers;
+      angular.forEach(contactPicked.phoneNumbers, function(contactInfo, key) {
+        $scope.contact = JSON.stringify(contactInfo);
+
+      });
+
+    });
+  };
+
+  $scope.testList = function() {
+   [{name:'John', age:25, gender:'boy'},
+    {name:'Jessie', age:30, gender:'girl'},
+    {name:'Johanna', age:28, gender:'girl'},
+    {name:'Joy', age:15, gender:'girl'},
+    {name:'Mary', age:28, gender:'girl'},
+    {name:'Peter', age:95, gender:'boy'},
+    {name:'Sebastian', age:50, gender:'boy'}];
+  };
+
+  $scope.clickPhone = function(msg){
+    alert(msg);
+  };
+
+  $scope.activeBg=function(msg){
+  // Android customization
+     cordova.plugins.backgroundMode.setDefaults({ text:'Doing heavy tasks.'});
+     // Enable background mode
+     cordova.plugins.backgroundMode.enable();
+
+     // Called when background mode has been activated
+     cordova.plugins.backgroundMode.onactivate = function () {
+
+         $scope.watchId = navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true });
+
+         setTimeout(function () {
+            var pet= $scope.watchId;
+             // Modify the currently displayed notification
+             cordova.plugins.backgroundMode.configure({
+                 text:'start watching'
+             });
+         }, 5000);
+     }
+   };
+
+   $scope.changeLanguage = function (key) {
+    alert(key);
+    $translate.use(key);
+  };
+
+});
+
+//on initalise factory (=middleware pour manipuler les donnees)
+myApp.factory("sendSMS", function ($q) {
+    //initalise les variables pour l'objet game
+
+    //methodes
+    return {
+      send: function(){
+        var q = $q.defer();
+
+        var options = {
+                 replaceLineBreaks: false, // true to replace \n by a new line, false by default
+                 android: {
+                     //intent: 'INTENT'  // send SMS with the native android SMS messaging
+                     intent: '' // send SMS without open any other app
+                 }
+        };
+
+       var success = function () {
+          q.resolve('sms envoyé!');
+       };
+
+       var error = function (e) {
+          q.reject('error!'+e);
+       };
+
+       sms.send('0690002354', 'tu recois ce message envoyé depuis mon appli? oui ou non', options, success, error);
+       return q.promise;
+      }
+    };
+
+});
+
+myApp.factory("message", function ($q) {
+
+  return {
+      //improve this method
+    display: function(msg,msgType,$scope,$timeout){
+
+      $scope.message=msg;
+
+      if (msgType=='showPositive'){
+           $scope.showPositive = !$scope.showPositive;
+
+           $timeout(function(){
+               $scope.showPositive = !$scope.showPositive;
+           }, 1500);
+      }
+
+      if (msgType=='showAlert'){
+          $scope.showAlert = !$scope.showAlert;
+          $timeout(function(){
+              $scope.showAlert = !$scope.showAlert;
+          }, 1500);
+      }
+    }
+  };
+});
+/*
+  $scope.getPhoto = function () {
+
+     var options = {
+        quality : 75,
+        targetWidth: 200,
+        targetHeight: 200,
+        sourceType: 1
+     };
+
+     //then pour avoir le retour de la factory (=un middleware)
+     Camera.getPicture(options).then(function(imageData) {
+       //si le retour est q.res
+        $scope.picture = imageData;
+     }, function(err) {
+      alert("test");
+     });
+
+     sendSMS.getSms().then(function() {
+
+       alert("ok");
+     }
+
+
+  };*/
+
+
+/*
+myApp.factory('Camera', function($q) {
+
+   return {
+      getPicture: function(options) {
+
+         var q = $q.defer();
+
+         navigator.camera.getPicture(function(result) {
+            q.resolve(result);
+         }, function(err) {
+            q.reject(err);
+         }, options);
+
+         return q.promise;
+      }
+   }
+
+});
+
+myApp.factory('sendSMS', function($q) {
+
+   return {
+      getSms: function() {
+         var q = $q.defer();
+
+         var options2 = {
+                    replaceLineBreaks: false, // true to replace \n by a new line, false by default
+                    android: {
+                        //intent: 'INTENT'  // send SMS with the native android SMS messaging
+                        intent: '' // send SMS without open any other app
+                    }
+        };
+
+         var success = function () { alert('Message sent successfully'); };
+         var error = function (e) { alert('Message Failed:' + e); };
+         sms.send('0690002354', 'message ici', options2, success, error);
+         return q.promise;
+      }
+   }
+
+});*/

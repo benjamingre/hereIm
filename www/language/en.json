@@ -1,0 +1,25 @@
+{
+  "LANGUAGE":"Language",
+  "BUTTON_LANG_FR": "French",
+  "BUTTON_LANG_EN": "English",
+  "EXIT":"EXIT",
+  "SELECT_PHONES" : "1. ADD A CONTACT",
+  "PHONENUMBER" : "Phone number",
+  "IS_EXIST" : "This Phone number already exist",
+  "NUMBER_SELECTION" : "Select Phone",
+  "FREQUENCY" : "send frequency",
+  "FREQUENCY_CONFIG" : "2. A SMS EACH...",
+  "CUSTOMTEXTE" : "3. MESSAGE (optional)",
+  "YOU_ARE_HERE" : "you are here",
+  "MIN" : "MINUTE(S)",
+  "SMSTEXT" : "add a personnal message",
+  "START" : "START",
+  "NAMEAPPLI" : "HERE I'M",
+  "NEXTSEND" : "NEXT SEND",
+  "INVALID_PHONE":"Invalid Phone Number",
+  "WELCOME_TEXT":"Share your current position by SMS",
+  "OR" : "OR",
+  "NUMBER_IS_EMPTY" : "Require at least a Phone number or add a contact",
+  "PHONE_EXIST" : "This phone number already exist"
+
+}

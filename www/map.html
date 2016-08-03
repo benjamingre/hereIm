@@ -1,0 +1,13 @@
+<ion-popover-view ng-controller="MapCtrl" style="height:100%;width:100%;">
+  <ion-header-bar>
+    <h1 class="title">{{'YOU_ARE_HERE' | translate}}
+    </h1>
+    <button class="button button-icon icon ion-close-round" ng-click="closePopover()"></button>
+  </ion-header-bar>
+
+
+  <ion-content>
+    <div id="map" data-tap-disabled="true"></div>
+  </ion-content>
+
+</ion-popover-view>

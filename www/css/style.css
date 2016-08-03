@@ -1,0 +1,337 @@
+/* Empty. Add your own CSS if you like */
+
+/*------ Config ------*/
+@font-face {
+    font-family: 'OpenSansCondensedLight';
+    src: url('OpenSans-Regular.ttf') format('truetype');
+    font-weight: 500;
+}
+
+body{
+    font-family: 'OpenSansCondensedLight', sans-serif;
+}
+
+h1, .subTitle{
+    font-family: 'OpenSansCondensedLight', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color:#3a3a3a;
+}
+
+/*------ Custom buttons ------*/
+
+
+
+
+/*------ forms ------*/
+input{
+    font-family: 'OpenSansCondensedLight', sans-serif;
+    background-color: #eee;
+}
+
+
+/*placeholder color*/
+input::-webkit-input-placeholder , textarea::-webkit-input-placeholder{
+ color:#BDBDBD;
+}
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder{ /* WebKit, Blink, Edge */
+    color:    #BDBDBD;
+}
+input:-moz-placeholder,textarea:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #BDBDBD;
+   opacity:  1;
+}
+input::-moz-placeholder,textarea::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #BDBDBD;
+   opacity:  1;
+}
+input:-ms-input-placeholder,textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #BDBDBD;
+}
+
+
+/*tel*/
+input[type="tel"] {
+    color:#3a3a3a;
+    display: inline;
+}
+
+/*text message*/
+textarea{
+    background-color:#eee;
+    width: 85%;
+    display: inline;
+    height: 26px;
+}
+
+
+/*button add contact*/
+#addContact{
+  background-color: #57D75F;
+}
+
+/* Button add Phone Number */
+#addPhoneButton{
+  float:right;
+  -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+   -moz-transition:   all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+     -o-transition:   all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+        transition:   all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  border-radius: 75%;
+  min-width: 20px;
+  min-height: 22px;
+  padding:0 3px 0 3px;
+  color:#e08e79;
+}
+
+#addPhoneButton.button .icon::before, #addPhoneButton.button.icon::before, #addPhoneButton.button.icon-left::before, #addPhoneButton.button.icon-right::before{
+  line-height: 44px!important;
+}
+
+.ButtonValid{
+  background-color: #57D75F!important;
+  border-radius: 0%!important;
+}
+
+.ButtonValid.ion-close-circled::before{
+  content:"+";
+  font-weight: bold;*/
+}
+
+.ButtonValid#addPhoneButton{
+    min-height: 47px;
+    min-width: 47px;
+    color:#ffffff;
+}
+
+.inputPhoneNumber{
+  width:50%;
+}
+
+.inputPhoneNumberCol{
+  background-color: #eee;
+  border-radius: 5px;
+}
+
+.ion-android-call::before{
+  line-height: 47px!important;
+  height: 47px!important;
+}
+
+.minSelector{
+    overflow: hidden;
+    display:inline;
+}
+
+/*select list*/
+.MinutedList{
+  background-color:#e6e6e6;
+  border-radius: 5px;
+  width: 50px;
+  height:50px;
+  line-height: 50px;
+  display:inline-block;
+  overflow: hidden;
+}
+
+.MinutedList select{
+  width:63px;
+  background: transparent;
+  border: 0;
+  text-align: center;
+}
+
+.toTheRight{
+  text-align: right;
+  padding: 0 5px 5px 5px;
+}
+
+
+/*------ map ------*/
+#map{
+  height: 100%;
+  width: 100%;
+}
+
+/*------ Options ------*/
+
+.topBar{
+    background-color: #4f87a4;
+}
+
+.bar .title {
+   color:#ffffff;
+}
+
+.optionButton{
+  background-color: #4f87a4;
+  height:34px;
+  width: 50px;
+}
+
+.optionButton img{
+  height:32px;
+  width: 32px;
+}
+
+/*------Modals View--------*/
+.modals{
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+/*------ Little label like GMail ------*/
+.receiversList img{
+  max-width: 20px;
+}
+
+.receiver{
+  display: inline-block;
+  background-color: #e6e6e6;
+  border-radius: 5px;
+  padding: 0 3px;
+  margin: 2px;
+}
+
+
+.myValign{
+  vertical-align: middle!important;
+}
+.deleteButton{
+  padding: 0;
+  background-color: transparent;
+}
+
+.receiversContainer{
+    padding: 5px;
+}
+
+/*------ SVG circle ------*/
+#myTimer{
+  font-size: 20px;
+  font-weight: bold;
+  color:#3a3a3a;
+}
+
+
+#circleCountdown{
+  stoke:#e08e79;
+  stroke-width:15;
+  -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+   -moz-transition:   all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+     -o-transition:   all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+        transition:   all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+/*V align with Flex*/
+.VerticalAlign{
+  display: -webkit-box;
+     display: -moz-box;
+     display: -ms-flexbox;
+     display: -webkit-flex;
+     display: flex;
+     -webkit-box-direction: normal;
+     -moz-box-direction: normal;
+     -webkit-box-orient: horizontal;
+     -moz-box-orient: horizontal;
+     -webkit-flex-direction: row;
+     -ms-flex-direction: row;
+     flex-direction: row;
+     -webkit-flex-wrap: nowrap;
+     -ms-flex-wrap: nowrap;
+     flex-wrap: nowrap;
+     -webkit-box-pack: center;
+     -moz-box-pack: center;
+     -webkit-justify-content: center;
+     -ms-flex-pack: center;
+     justify-content: center;
+     -webkit-align-content: stretch;
+     -ms-flex-line-pack: stretch;
+     align-content: stretch;
+     -webkit-box-align: center;
+     -moz-box-align: center;
+     -webkit-align-items: center;
+     -ms-flex-align: center;
+     align-items: center;
+}
+
+.Hcenter{
+  text-align: center;
+}
+
+/*MyModal*/
+.myModal{
+  width:100%;
+  height: 100%;
+  top: 0 !important;
+  left: 0 !important;
+  text-align: centre;
+}
+
+
+/*ToolTip*/
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltiptext{
+   width: 140px;
+   background-color: black;
+   color: #fff;
+   text-align: center;
+   border-radius: 6px;
+   padding: 5px 0;
+   position: absolute;
+   z-index: 1;
+   top: -75px;
+   left: 50%;
+   margin-left: -80px;
+   opacity: 0;
+   transition: opacity 0.5s;
+   font-size: 12px;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+#addPhoneButton:hover .tooltiptext {
+    opacity: 1;
+}
+
+#startButton.button.button-positive {
+  background-color: #57D75F;
+  margin-top: 15px;
+}
+
+/*icon size*/
+.myIconSize{
+  font-size:20px;
+  height:40px;
+  line-height:30px;
+}
+
+/*text area size*/
+.myHeight{
+  height:40px;
+}
+
+.textOr{
+  line-height:46px;
+  font-size: 20px;
+  font-weight: bold;
+  color:#3a3a3a;
+  padding: 0 5px 0 0;
+}
+
+.reducePadding{
+  padding: 0 5px 5px 5px;
+}

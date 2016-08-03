@@ -1,0 +1,82 @@
+<ion-content padding="true" >
+
+   <ion-scroll delegate-handle="mainScroll" style="height: 3000px;">
+  <h1>{{'OPTIONS' | translate}}</h1>
+
+  <div class="row">
+    <div class="col col-75">
+      <label class="item item-input">
+        <i class="icon ion-ios-telephone placeholder-icon"></i>
+        <input type="tel" placeholder="{{'PHONENUMBER' | translate}}">
+      </label>
+    </div>
+    <div class="col">
+
+      <button class="button button-positive" ng-click="getPhoneNumbers()">
+        <i class="icon ion-person-add"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+
+      <ion-list ng-controller="receiversListCtrl" show-delete="shouldShowDelete" >
+        <ion-item ng-repeat="receiver in receivers.all">
+          <ion-delete-button class="ion-minus-circled" ng-click="receivers.all.splice($index, 1)">
+          </ion-delete-button>
+          {{receiver.phone}}
+        </ion-item>
+      </ion-list>
+
+    </div>
+  </div>
+
+<div ng-controller="formCtrl">
+
+  <div class="row">
+    <div class="col">
+      <h1>{{'FREQUENCY' | translate}}</h1>
+      <div>
+        <div>
+           {{frequency| date:'HH : mm'}}
+           <div class="item item-input-inset">
+             <label class="item-input-wrapper">
+               <input ng-model="frequency" type="text" ng-click="date()">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h1>{{'CUSTOMTEXTE' | translate}}</h1>
+      <button class="button button-large button-stable icon-left ion-chatbox-working" ng-click="editSMS('smsInput')"></button>
+      <!-- focus an hide large input -->
+
+      <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+          <input ng-model="smsContent" id="smsInput" type="text" ng-show="smsForm" ng-class="ng-hide" ng-blur="hideInput()">
+        </label>
+      </div>
+
+      <div class="list list-inset">
+        <label class="item item-input">
+          <i class="icon ion-chatbox-working placeholder-icon"></i>
+          <input type="text" placeholder="smsText" ng-change="updateSmsText()" ng-model="smsText">
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- go to running  window-->
+  <a ui-sref="running({'parametre':{'smsContent':smsContent,'frequency':frequency,'receivers':receivers.all}})">
+    go to running
+  </a>
+</div>
+
+</ion-scroll>
+</ion-content>
